@@ -20,6 +20,8 @@ spec:
     crds: CreateReplace
   values:
     installCRDs: true
+    extraArgs:
+      - --feature-gates=ExperimentalGatewayAPISupport=true
     serviceAccount:
       create: true
       name: cert-manager

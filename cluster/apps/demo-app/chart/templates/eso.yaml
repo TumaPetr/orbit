@@ -64,4 +64,4 @@ spec:
     - match:
         secretKey: app_password
         remoteRef:
-          remoteKey: {{ .Values.appName }}-db-password
+          remoteKey: {{ .Values.appName | replace "_" "-" }}-db-password
