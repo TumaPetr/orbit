@@ -62,5 +62,5 @@ variable "workload_identities" {
 variable "additional_admin_object_id" {
   type        = string
   description = "Admin ID pre extra access"
-  default     = ""
+  default     = "1988cfd9-d27b-422c-9107-f43be9741054"
 }
