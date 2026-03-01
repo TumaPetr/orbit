@@ -19,6 +19,7 @@ variable "gitops_configurations" {
       name       = string
       path       = string
       substitute = optional(map(string), {})
+      depends_on = optional(list(string), [])
     }))
   }))
 }

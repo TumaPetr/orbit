@@ -21,8 +21,9 @@ resource "azurerm_kubernetes_flux_configuration" "this" {
   dynamic "kustomizations" {
     for_each = each.value.kustomizations
     content {
-      name = kustomizations.value.name
-      path = kustomizations.value.path
+      name       = kustomizations.value.name
+      path       = kustomizations.value.path
+      depends_on = kustomizations.value.depends_on
       
       # Předáváme zkompilované placeholdery přímo z Terraform configu!
       dynamic "post_build" {

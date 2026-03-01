@@ -18,6 +18,21 @@ gitops_configurations = {
       {
         name = "envoy-gateway"
         path = "./cluster/infra/envoy-gateway"
+      },
+      {
+        name = "cert-manager-config"
+        path = "./cluster/infra-config/cert-manager"
+        depends_on = ["cert-manager"]
+      },
+      {
+        name = "external-secrets-config"
+        path = "./cluster/infra-config/external-secrets"
+        depends_on = ["external-secrets"]
+      },
+      {
+        name = "envoy-gateway-config"
+        path = "./cluster/infra-config/envoy-gateway"
+        depends_on = ["envoy-gateway"]
       }
     ]
   }
