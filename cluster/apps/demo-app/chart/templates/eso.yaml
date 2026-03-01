@@ -30,6 +30,8 @@ spec:
         app_password: '{{ "{{ .password }}" }}'
         init.sh: |
           #!/bin/sh
+          set -e
+          set -x
           export PGPASSWORD="{{ "{{ .POSTGRES_PASSWORD }}" }}"
           export PGSSLMODE="require"
           echo "Creating Application Database: {{ .Values.appName }}"

@@ -43,6 +43,30 @@ resource "azurerm_network_security_group" "backend" {
   name                = local.nsg_backend_name
   location            = module.resource_groups["infra"].location
   resource_group_name = module.resource_groups["infra"].name
+
+  security_rule {
+    name                       = "AllowHTTP"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "80"
+    source_address_prefix      = "Internet"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "AllowHTTPS"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "Internet"
+    destination_address_prefix = "*"
+  }
 }
 
 resource "azurerm_network_security_group" "db" {
