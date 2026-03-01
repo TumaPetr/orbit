@@ -1,0 +1,66 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: app-db-init-script
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "-5"
+spec:
+  refreshInterval: "0"
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: default
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: ClusterGenerator
+          name: "default"
+  data:
+    - secretKey: POSTGRES_PASSWORD
+      remoteRef:
+        key: {{ .Values.adminSecretKey | quote }}
+  target:
+    name: app-db-init-script
+    creationPolicy: Owner
+    template:
+      engineVersion: v2
+      data:
+        app_password: '{{ "{{ .password }}" }}'
+        init.sh: |
+          #!/bin/sh
+          export PGPASSWORD="{{ "{{ .POSTGRES_PASSWORD }}" }}"
+          echo "Creating Application Database: {{ .Values.appName }}"
+          psql -h {{ .Values.dbHost }} -U {{ .Values.adminUser }} -d postgres -c "CREATE DATABASE {{ .Values.appName }};" || true
+          
+          echo "Applying Permissions inside: {{ .Values.appName }}"
+          psql -h {{ .Values.dbHost }} -U {{ .Values.adminUser }} -d postgres <<EOF
+          CREATE USER {{ .Values.appUser }} WITH PASSWORD '{{ "{{ .password }}" }}';
+          ALTER USER {{ .Values.appUser }} WITH PASSWORD '{{ "{{ .password }}" }}';
+          GRANT ALL PRIVILEGES ON DATABASE {{ .Values.appName }} TO {{ .Values.appUser }};
+          \c {{ .Values.appName }}
+          GRANT ALL ON SCHEMA public TO {{ .Values.appUser }};
+          EOF
+          echo "Done."
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: push-app-db-creds
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "-4"
+spec:
+  refreshInterval: "1h"
+  secretStoreRefs:
+    - name: default
+      kind: ClusterSecretStore
+  selector:
+    secret:
+      name: app-db-init-script
+  data:
+    - match:
+        secretKey: app_password
+      remoteRef:
+        remoteKey: {{ .Values.appName }}-db-password

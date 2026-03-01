@@ -1,0 +1,39 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: external-dns
+  namespace: external-dns
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: external-dns
+      version: "1.20.x"
+      sourceRef:
+        kind: HelmRepository
+        name: external-dns
+      interval: 10m
+  values:
+    provider: azure
+    azure:
+      resourceGroup: "${DNS_RG_NAME}"
+      tenantId: "${AZURE_TENANT_ID}"
+      subscriptionId: "${AZURE_SUBSCRIPTION_ID}"
+      useWorkloadIdentityExtension: true
+    sources:
+      - service
+      - ingress
+      - gateway-httproute
+      - gateway-grpcroute
+      - gateway-tlsroute
+      - gateway-tcproute
+      - gateway-udproute
+    domainFilters:
+      - "${PUBLIC_DOMAIN}"
+    policy: sync
+    txtOwnerId: "orbit-aks"
+    serviceAccount:
+      create: true
+      name: external-dns
+      annotations:
+        azure.workload.identity/client-id: "${EXTDNS_CLIENT_ID}"

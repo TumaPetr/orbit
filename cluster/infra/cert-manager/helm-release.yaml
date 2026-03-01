@@ -1,0 +1,26 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: cert-manager
+      version: "v1.19.x"
+      sourceRef:
+        kind: HelmRepository
+        name: jetstack
+      interval: 10m
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  values:
+    installCRDs: true
+    serviceAccount:
+      create: true
+      name: cert-manager
+      annotations:
+        azure.workload.identity/client-id: "${CERT_MANAGER_CLIENT_ID}"

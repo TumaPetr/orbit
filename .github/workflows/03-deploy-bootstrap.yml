@@ -1,0 +1,33 @@
+name: 03 - Deploy 03-bootstrap
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Terraform Setup & Init
+        uses: ./.github/actions/tf-setup
+        with:
+          working_dir: terraform/03-bootstrap
+
+      - name: Terraform Plan
+        working-directory: terraform/03-bootstrap
+        run: terraform plan -var-file=../inputs/03-bootstrap.tfvars -out=tfplan
+
+      - name: Terraform Apply
+        working-directory: terraform/03-bootstrap
+        run: terraform apply -auto-approve tfplan

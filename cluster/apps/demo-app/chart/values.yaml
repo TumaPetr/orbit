@@ -1,0 +1,8 @@
+domain: test.local
+dbHost: pg.postgres.database.azure.com
+kvName: dev-kv
+
+adminUser: pgadmin
+adminSecretKey: postgres-admin-password
+appUser: demo_user
+appName: orbit_demo

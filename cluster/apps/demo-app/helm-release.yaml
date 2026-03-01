@@ -1,0 +1,18 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: demo-app
+  namespace: default
+spec:
+  interval: 1m
+  chart:
+    spec:
+      chart: "./cluster/apps/demo-app/chart"
+      sourceRef:
+        kind: GitRepository
+        name: cluster-infrastructure
+        namespace: flux-system
+  values:
+    domain: "${PUBLIC_DOMAIN}"
+    dbHost: "${PG_FQDN}"
+    kvName: "${KV_NAME}"

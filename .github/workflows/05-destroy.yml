@@ -1,0 +1,56 @@
+name: 05 - Destroy Environments
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_destroy:
+        description: 'Napiš DESTROY pro potvrzení'
+        required: true
+        default: 'no'
+      destroy_03:
+        description: 'Smazat 03-bootstrap (Flux)'
+        type: boolean
+        default: true
+      destroy_02:
+        description: 'Smazat 02-hands-on (Infrastrukturu)'
+        type: boolean
+        default: true
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm_destroy == 'DESTROY'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform for 03-bootstrap
+        if: github.event.inputs.destroy_03 == 'true'
+        uses: ./.github/actions/tf-setup
+        with:
+          working_dir: terraform/03-bootstrap
+
+      - name: Destroy 03-bootstrap
+        if: github.event.inputs.destroy_03 == 'true'
+        working-directory: terraform/03-bootstrap
+        run: terraform destroy -var-file=../inputs/03-bootstrap.tfvars -auto-approve
+
+      - name: Setup Terraform for 02-hands-on
+        if: github.event.inputs.destroy_02 == 'true'
+        uses: ./.github/actions/tf-setup
+        with:
+          working_dir: terraform/02-hands-on
+
+      - name: Destroy 02-hands-on
+        if: github.event.inputs.destroy_02 == 'true'
+        working-directory: terraform/02-hands-on
+        run: terraform destroy -var-file=../inputs/02-hands-on.tfvars -auto-approve
