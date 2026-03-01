@@ -35,13 +35,14 @@ resource "azurerm_private_endpoint" "kv" {
 resource "azurerm_role_assignment" "tf_kv_admin" {
   scope                = azurerm_key_vault.main.id
   role_definition_name = "Key Vault Secrets Officer"
-  principal_id         = local.admin_principal_id
+  principal_id         = data.azurerm_client_config.current.object_id
 }
 
-resource "azurerm_role_assignment" "tf_runner_kv_admin" {
+resource "azurerm_role_assignment" "additional_kv_admin" {
+  count                = var.additional_admin_object_id != "" && var.additional_admin_object_id != data.azurerm_client_config.current.object_id ? 1 : 0
   scope                = azurerm_key_vault.main.id
   role_definition_name = "Key Vault Secrets Officer"
-  principal_id         = data.azurerm_client_config.current.object_id
+  principal_id         = var.additional_admin_object_id
 }
 
 resource "azurerm_key_vault_secret" "pg_admin_password" {
@@ -50,7 +51,7 @@ resource "azurerm_key_vault_secret" "pg_admin_password" {
   key_vault_id = azurerm_key_vault.main.id
 
   depends_on = [
-    azurerm_role_assignment.tf_runner_kv_admin
+    azurerm_role_assignment.tf_kv_admin
   ]
 }
 # Workload Identities as a map
