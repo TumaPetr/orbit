@@ -10,6 +10,7 @@ resource "azurerm_kubernetes_flux_configuration" "this" {
   name       = each.key
   cluster_id = var.cluster_id
   namespace  = each.value.namespace
+  scope      = "cluster"
 
   git_repository {
     url             = each.value.url
