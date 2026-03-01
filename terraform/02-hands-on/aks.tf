@@ -12,6 +12,12 @@ resource "azurerm_kubernetes_cluster" "main" {
     vm_size         = var.aks_config.vm_size
     os_disk_size_gb = var.aks_config.os_disk_size_gb
     vnet_subnet_id  = azurerm_subnet.backend.id
+
+    upgrade_settings {
+      max_surge                     = "10%"
+      drain_timeout_in_minutes      = 0
+      node_soak_duration_in_minutes = 0
+    }
   }
 
   identity {
