@@ -12,6 +12,7 @@ resource "azurerm_postgresql_flexible_server" "main" {
   administrator_login    = "pgadmin"
   administrator_password = random_password.pg_admin.result
   zone                   = "1"
+  public_network_access_enabled = false
 
   depends_on = [
     azurerm_private_dns_zone_virtual_network_link.postgres

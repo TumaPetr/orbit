@@ -23,7 +23,7 @@ db_config = {
 aks_config = {
   sku_tier        = "Free"
   node_count      = 2
-  vm_size         = "Standard_B2s"
+  vm_size         = "Standard_B2s_v2"
   os_disk_size_gb = 50
 }
 

@@ -60,6 +60,12 @@ resource "azurerm_role_assignment" "subscription_contributor_runner" {
   principal_id         = module.github_runner_identity.principal_id
 }
 
+resource "azurerm_role_assignment" "subscription_rbac_admin_runner" {
+  scope                = "/subscriptions/${data.azurerm_client_config.current.subscription_id}"
+  role_definition_name = "Role Based Access Control Administrator"
+  principal_id         = module.github_runner_identity.principal_id
+}
+
 # --- Uložení parametrů identity do GitHub Secrets pro GitHub Actions ---
 
 resource "github_actions_secret" "azure_client_id" {
