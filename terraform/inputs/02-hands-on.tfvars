@@ -1,6 +1,6 @@
 prefix        = "orbit"
 location      = "swedencentral"
-public_domain = "moje-demo-adresa.cz"
+domain_name_label = "demo-orbit-petrtuma"
 
 resource_groups = {
   infra = {
@@ -10,10 +10,6 @@ resource_groups = {
   aks = {
     name_suffix = "aks"
     tags        = { Environment = "Demo", Workload = "AKS Cluster" }
-  }
-  dns = {
-    name_suffix = "dns"
-    tags        = { Environment = "Demo", Workload = "Public DNS" }
   }
 }
 
@@ -26,7 +22,7 @@ db_config = {
 
 aks_config = {
   sku_tier        = "Free"
-  node_count      = 1
+  node_count      = 2
   vm_size         = "Standard_B2s"
   os_disk_size_gb = 50
 }
@@ -39,9 +35,5 @@ workload_identities = {
   cert_manager = {
     ns = "cert-manager"
     sa = "cert-manager"
-  }
-  external_dns = {
-    ns = "external-dns"
-    sa = "external-dns"
   }
 }

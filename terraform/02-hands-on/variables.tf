@@ -14,9 +14,9 @@ variable "location" {
   }
 }
 
-variable "public_domain" {
+variable "domain_name_label" {
   type        = string
-  description = "Main domain for public DNS zone"
+  description = "Label for the Azure Cloudapp FQDN."
 }
 
 variable "resource_groups" {

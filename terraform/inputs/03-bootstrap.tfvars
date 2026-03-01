@@ -12,10 +12,6 @@ gitops_configurations = {
         path = "./cluster/infra/cert-manager"
       },
       {
-        name = "external-dns"
-        path = "./cluster/infra/external-dns"
-      },
-      {
         name = "external-secrets"
         path = "./cluster/infra/external-secrets"
       },

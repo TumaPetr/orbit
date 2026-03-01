@@ -75,12 +75,14 @@ resource "azurerm_subnet_network_security_group_association" "db" {
   network_security_group_id = azurerm_network_security_group.db.id
 }
 
-# Public DNS Zone
-resource "azurerm_dns_zone" "public" {
-  name                = var.public_domain
-  resource_group_name = module.resource_groups["dns"].name
+resource "azurerm_public_ip" "envoy_pip" {
+  name                = "pip-envoy-ingress"
+  resource_group_name = module.resource_groups["infra"].name
+  location            = module.resource_groups["infra"].location
+  allocation_method   = "Static"
+  sku                 = "Standard"
+  domain_name_label   = var.domain_name_label
 }
-
 
 # Private DNS Zones
 resource "azurerm_private_dns_zone" "postgres" {

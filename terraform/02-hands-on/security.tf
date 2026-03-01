@@ -80,14 +80,3 @@ resource "azurerm_role_assignment" "eso_kv_officer" {
   principal_id         = module.workload_identities["eso"].principal_id
 }
 
-resource "azurerm_role_assignment" "cert_manager_dns" {
-  scope                = azurerm_dns_zone.public.id
-  role_definition_name = "DNS Zone Contributor"
-  principal_id         = module.workload_identities["cert_manager"].principal_id
-}
-
-resource "azurerm_role_assignment" "external_dns_zone" {
-  scope                = azurerm_dns_zone.public.id
-  role_definition_name = "DNS Zone Contributor"
-  principal_id         = module.workload_identities["external_dns"].principal_id
-}

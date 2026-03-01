@@ -9,11 +9,10 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-prod-account-key
     solvers:
-      - dns01:
-          azureDNS:
-            hostedZoneName: "${PUBLIC_DOMAIN}"
-            resourceGroupName: "${DNS_RG_NAME}"
-            subscriptionID: "${AZURE_SUBSCRIPTION_ID}"
-            environment: AzurePublicCloud
-            managedIdentity:
-              clientID: "${CERT_MANAGER_CLIENT_ID}"
+    - http01:
+        gatewayHTTPRoute:
+          parentRefs:
+          - group: gateway.networking.k8s.io
+            kind: Gateway
+            name: eg
+            namespace: default

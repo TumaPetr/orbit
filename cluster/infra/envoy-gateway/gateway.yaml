@@ -1,10 +1,40 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: azure-pip-proxy
+  namespace: default
+spec:
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyService:
+        type: LoadBalancer
+        annotations:
+          service.beta.kubernetes.io/azure-load-balancer-resource-group: "${INFRA_RG_NAME}"
+          service.beta.kubernetes.io/azure-pip-name: "${PUBLIC_IP_NAME}"
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: dynamic-eg
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+  parametersRef:
+    group: gateway.envoyproxy.io
+    kind: EnvoyProxy
+    name: azure-pip-proxy
+    namespace: default
+---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: eg
   namespace: default
 spec:
-  gatewayClassName: eg
+  gatewayClassName: dynamic-eg
+  addresses:
+  - type: IPAddress
+    value: "${PUBLIC_IP_ADDRESS}"
   listeners:
     - name: http
       protocol: HTTP
