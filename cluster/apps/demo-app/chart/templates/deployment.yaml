@@ -38,7 +38,14 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
+              set -e
               echo "Starting background worker..."
+              # Wait for DB to be initialized to prevent hook-race errors
+              until psql -c '\q'; do
+                echo "Waiting for password replication or DB initialization..."
+                sleep 2
+              done
+              
               # Predvytvoreni tabulky logu
               psql -c "CREATE TABLE IF NOT EXISTS activity_log (id SERIAL PRIMARY KEY, note TEXT, created_at TIMESTAMP DEFAULT NOW());"
               
