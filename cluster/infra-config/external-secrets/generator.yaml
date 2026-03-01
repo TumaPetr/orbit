@@ -3,8 +3,9 @@ kind: ClusterGenerator
 metadata:
   name: default
 spec:
+  kind: Password
   generator:
-    password:
+    passwordSpec:
       length: 24
       digits: 5
       symbols: 0
