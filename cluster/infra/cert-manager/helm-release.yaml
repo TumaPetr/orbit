@@ -20,8 +20,10 @@ spec:
     crds: CreateReplace
   values:
     installCRDs: true
-    extraArgs:
-      - --feature-gates=ExperimentalGatewayAPISupport=true
+    config:
+      apiVersion: controller.config.cert-manager.io/v1alpha1
+      kind: ControllerConfiguration
+      enableGatewayAPI: true
     serviceAccount:
       create: true
       name: cert-manager
