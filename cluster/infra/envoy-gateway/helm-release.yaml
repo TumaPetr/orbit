@@ -2,8 +2,9 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: envoy-gateway
-  namespace: envoy-gateway-system
+  namespace: flux-system
 spec:
+  targetNamespace: envoy-gateway-system
   interval: 10m
   chart:
     spec:
