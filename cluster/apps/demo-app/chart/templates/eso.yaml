@@ -31,6 +31,7 @@ spec:
         init.sh: |
           #!/bin/sh
           export PGPASSWORD="{{ "{{ .POSTGRES_PASSWORD }}" }}"
+          export PGSSLMODE="require"
           echo "Creating Application Database: {{ .Values.appName }}"
           psql -h {{ .Values.dbHost }} -U {{ .Values.adminUser }} -d postgres -c "CREATE DATABASE {{ .Values.appName }};" || true
           

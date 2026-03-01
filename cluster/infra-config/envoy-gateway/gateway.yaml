@@ -30,6 +30,8 @@ kind: Gateway
 metadata:
   name: eg
   namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   gatewayClassName: dynamic-eg
   addresses:
